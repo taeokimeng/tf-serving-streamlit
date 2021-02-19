@@ -52,6 +52,7 @@ loss, acc = model.evaluate(x_test, y_test, verbose=0)
 print('Accuracy: %.3f' % acc)
 
 # save model
-ts = int(time.time())
-file_path = f"./img_classifier/{ts}/"
+# ts = int(time.time())
+ver = int(2)
+file_path = f"./img_classifier/{ver}/"
 model.save(filepath=file_path, save_format='tf')

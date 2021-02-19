@@ -7,7 +7,8 @@ import numpy as np
 from tensorflow.keras.datasets.mnist import load_data
 
 # server URL
-url = 'http://localhost:8501/v1/models/img_classifier:predict'
+# url = 'http://localhost:8501/v1/models/img_classifier:predict'
+# url = 'http://localhost:8501/v1/models/img_classifier/versions/1:predict'
 
 @st.cache
 def load_mnist_data():
@@ -57,7 +58,7 @@ def data_plots(start, end, x_test):
     plt.tight_layout()
     st.pyplot(fig)
 
-def predictions_plots(start, end, x_test, predictions):
+def predictions_plots(start, end, x_test, y_test, predictions):
     count = end - start + 1
     if count % 5 == 0:
         nrows = count // 5
@@ -70,12 +71,16 @@ def predictions_plots(start, end, x_test, predictions):
             ax.set_axis_off()
             continue
         ax.imshow(x_test[start + i].reshape(28, 28), cmap=plt.get_cmap('gray'))
-        ax.set_title(f"{np.argmax(predictions[i])}")
+        if np.argmax(predictions[i]) != y_test[i]:
+            ax.set_title(f"{np.argmax(predictions[i])}", color='r')
+        else:
+            ax.set_title(f"{np.argmax(predictions[i])}")
         ax.axis('off')
     plt.tight_layout()
     st.pyplot(fig)
 
-def make_prediction(instances):
+def make_prediction(instances, version):
+    url = f'http://localhost:8501/v1/models/img_classifier/versions/{version}:predict'
     data = json.dumps({"signature_name": "serving_default", "instances": instances.tolist()})
     headers = {"content-type": "application/json"}
     json_response = requests.post(url, data=data, headers=headers)
@@ -93,12 +98,12 @@ def main():
         data_plot(number, x_test)
 
     start, end = st.select_slider('Select the index range', options=list(range(30)), value=(1, 9))
-    print(start, end)
     data_plots(start, end, x_test)
 
+    version = st.radio("Select the version", (1, 2))
     if st.button('Request prediction'):
-        predictions = make_prediction(x_test[start:end + 1])
-        predictions_plots(start, end, x_test, predictions)
+        predictions = make_prediction(x_test[start:end + 1], version)
+        predictions_plots(start, end, x_test, y_test, predictions)
         # for i, pred in enumerate(predictions):
         #     st.write(f"Index {start + i} ... True Value: {y_test[i]}, Predicted Value: {np.argmax(pred)}")
 
