@@ -79,8 +79,8 @@ def predictions_plots(start, end, x_test, y_test, predictions):
     plt.tight_layout()
     st.pyplot(fig)
 
-def make_prediction(instances, version):
-    url = f'http://localhost:8501/v1/models/img_classifier/versions/{version}:predict'
+def make_prediction(instances, model, version):
+    url = f'http://localhost:8501/v1/models/{model}/versions/{version}:predict'
     data = json.dumps({"signature_name": "serving_default", "instances": instances.tolist()})
     headers = {"content-type": "application/json"}
     json_response = requests.post(url, data=data, headers=headers)
@@ -100,9 +100,10 @@ def main():
     start, end = st.select_slider('Select the index range', options=list(range(30)), value=(1, 9))
     data_plots(start, end, x_test)
 
+    model = st.radio("Select the model", ("MyLeNet", "LeNet"))
     version = st.radio("Select the version", (1, 2))
     if st.button('Request prediction'):
-        predictions = make_prediction(x_test[start:end + 1], version)
+        predictions = make_prediction(x_test[start:end + 1], model, version)
         predictions_plots(start, end, x_test, y_test, predictions)
         # for i, pred in enumerate(predictions):
         #     st.write(f"Index {start + i} ... True Value: {y_test[i]}, Predicted Value: {np.argmax(pred)}")

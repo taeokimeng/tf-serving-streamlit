@@ -11,6 +11,9 @@ from tensorflow.keras.layers import MaxPool2D
 from tensorflow.keras.layers import Flatten
 from tensorflow.keras.layers import Dropout
 
+MODEL_NAME = "MyLeNet"
+VERSION = 2
+
 # load MNIST dataset
 (x_train, y_train), (x_test, y_test) = load_data()
 print(f'Train: X={x_train.shape}, y={y_train.shape}')
@@ -45,7 +48,7 @@ model.add(Dense(n_classes, activation='softmax'))
 model.compile(optimizer='adam', loss='sparse_categorical_crossentropy', metrics=['accuracy'])
 
 # fit the model
-model.fit(x_train, y_train, epochs=10, batch_size=128, verbose=1)
+model.fit(x_train, y_train, epochs=5, batch_size=128, verbose=1)
 
 # evaluate the model
 loss, acc = model.evaluate(x_test, y_test, verbose=0)
@@ -53,6 +56,5 @@ print('Accuracy: %.3f' % acc)
 
 # save model
 # ts = int(time.time())
-ver = int(2)
-file_path = f"./img_classifier/{ver}/"
+file_path = f"./models/{MODEL_NAME}/{VERSION}/"
 model.save(filepath=file_path, save_format='tf')
