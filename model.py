@@ -11,8 +11,8 @@ from tensorflow.keras.layers import MaxPool2D
 from tensorflow.keras.layers import Flatten
 from tensorflow.keras.layers import Dropout
 
-MODEL_NAME = "MyLeNet"
-VERSION = 2
+MODEL_NAME = "LeNet"
+VERSION = 3
 
 # load MNIST dataset
 (x_train, y_train), (x_test, y_test) = load_data()
@@ -35,7 +35,7 @@ n_classes = len(unique(y_train))
 
 # define model
 model = Sequential()
-model.add(Conv2D(64, (3,3), activation='relu', input_shape=input_shape))
+model.add(Conv2D(64, (3,3), activation='sigmoid', input_shape=input_shape))
 model.add(MaxPool2D((2, 2)))
 model.add(Conv2D(32, (3,3), activation='relu'))
 model.add(MaxPool2D((2, 2)))

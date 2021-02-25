@@ -69,13 +69,13 @@ def predictions_plots(start, end, x_test, y_test, predictions):
     for i, ax in enumerate(axes.flat):
         if i > count - 1:
             ax.set_axis_off()
-            continue
-        ax.imshow(x_test[start + i].reshape(28, 28), cmap=plt.get_cmap('gray'))
-        if np.argmax(predictions[i]) != y_test[i]:
-            ax.set_title(f"{np.argmax(predictions[i])}", color='r')
         else:
-            ax.set_title(f"{np.argmax(predictions[i])}")
-        ax.axis('off')
+            ax.imshow(x_test[start + i].reshape(28, 28), cmap=plt.get_cmap('gray'))
+            if np.argmax(predictions[i]) != y_test[start + i]:
+                ax.set_title(f"{np.argmax(predictions[i])}", color='r')
+            else:
+                ax.set_title(f"{np.argmax(predictions[i])}")
+            ax.axis('off')
     plt.tight_layout()
     st.pyplot(fig)
 
